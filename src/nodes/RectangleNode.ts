@@ -9,6 +9,7 @@ export class RectangleNode implements INode {
     width = 100;
     height = 100;
     color = '#333333';
+    isLocked = false;
 
     constructor(context: CanvasRenderingContext2D) {
         this.x = context.canvas.width / 2 - this.width / 2;

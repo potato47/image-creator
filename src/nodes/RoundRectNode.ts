@@ -10,6 +10,7 @@ export class RoundRectNode implements INode {
     height = 100;
     radius = 10;
     color = '#333333';
+    isLocked = false;
 
     constructor(context: CanvasRenderingContext2D) {
         this.x = context.canvas.width / 2 - this.width / 2;

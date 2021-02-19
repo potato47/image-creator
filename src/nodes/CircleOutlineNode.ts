@@ -9,6 +9,7 @@ export class CircleOutlineNode implements INode {
     radius = 50;
     lineWidth = 5;
     color = '#333333';
+    isLocked = false;
 
     constructor(context: CanvasRenderingContext2D) {
         this.x = context.canvas.width / 2;

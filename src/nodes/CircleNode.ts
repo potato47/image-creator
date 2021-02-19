@@ -8,6 +8,7 @@ export class CircleNode implements INode {
     y = 50;
     radius = 50;
     color = '#333333';
+    isLocked = false;
 
     constructor(context: CanvasRenderingContext2D) {
         this.x = context.canvas.width / 2;

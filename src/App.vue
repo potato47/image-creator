@@ -35,13 +35,26 @@
         <div style="flex: 1; overflow: auto">
           <el-tree
             :data="treeData"
+            node-key="uuid"
             :props="treeDefaultProps"
+            :current-node-key="currentNodeKey"
             :expand-on-click-node="false"
             :default-expand-all="true"
             draggable
             highlight-current
+            ref="tree"
             @node-click="handleNodeClick"
           >
+            <template #default="{ node, data }">
+              <span class="custom-tree-node">
+                <span>{{ node.label }}</span>
+                <span>
+                  <i
+                    :class="data.isLocked ? 'el-icon-lock' : 'el-icon-unlock'"
+                  ></i>
+                </span>
+              </span>
+            </template>
           </el-tree>
         </div>
         <div class="border" style="flex: 1; overflow: auto">
@@ -83,7 +96,7 @@
         <el-footer
           style="display: flex; align-items: center; justify-content: center"
         >
-          <div style="display: flex; align-items: center;">
+          <div style="display: flex; align-items: center">
             尺寸
             <el-input-number
               placeholder="width"
@@ -91,14 +104,14 @@
               size="mini"
             >
             </el-input-number>
-            x
+            &nbsp;x&nbsp;
             <el-input-number
               placeholder="height"
               v-model="canvasConfig.height"
               size="mini"
             >
             </el-input-number>
-            缩放：
+            &nbsp;&nbsp;缩放
             <el-input-number
               placeholder="zoom"
               v-model="canvasConfig.zoom"
@@ -109,7 +122,7 @@
               :max="10"
             >
             </el-input-number>
-            背景:
+            &nbsp;&nbsp;背景
             <el-color-picker
               size="mini"
               show-alpha
@@ -134,9 +147,9 @@
               @click="handleDeleteNode(currentNode)"
               >删除</el-button
             >
-            <!-- <el-button type="primary" @click="handleCopyNode(currentNode)"
-              >复制</el-button
-            > -->
+            <el-button type="warning" @click="handleLockNode(currentNode)">{{
+              currentNode.isLocked ? "解锁" : "锁定"
+            }}</el-button>
           </el-form-item>
           <el-form-item
             :label="key.display"
@@ -214,6 +227,7 @@ export default class App extends Vue {
     },
   ];
   currentNode: INode = null!;
+  currentNodeKey = -1;
   nodeKeys: INodeKey[] = [];
   treeData: INode[] = [];
   templateGroups = templateGroups;
@@ -239,7 +253,7 @@ export default class App extends Vue {
             this.canvasConfig.zoom,
         };
         this.treeData.forEach((node: INode) => {
-          if (node.isPointInPath(context, mouseStart.x, mouseStart.y)) {
+          if (!node.isLocked && node.isPointInPath(context, mouseStart.x, mouseStart.y)) {
             dragGraph = node;
           }
         });
@@ -289,7 +303,12 @@ export default class App extends Vue {
     if (command === "save-file") {
       this.handleSaveFile();
     } else if (command === "new-file") {
-      this.canvasConfig = { width: 500, height: 500, zoom: 1, color: "rgba(0, 0, 0, 0)" };
+      this.canvasConfig = {
+        width: 500,
+        height: 500,
+        zoom: 1,
+        color: "rgba(0, 0, 0, 0)",
+      };
       this.treeData = [];
       this.currentNode = null!;
     }
@@ -297,6 +316,8 @@ export default class App extends Vue {
   handleNodeClick(node: any) {
     this.currentNode = node;
     this.nodeKeys = this.currentNode.getKeys();
+    this.currentNodeKey = this.currentNode.uuid;
+    (this.$refs.tree as any).setCurrentKey(this.currentNodeKey);
   }
   handleAddNode(type: any) {
     const node = new type(context);
@@ -316,6 +337,9 @@ export default class App extends Vue {
       this.nodeKeys = [];
     }
   }
+  handleLockNode(node: INode) {
+    node.isLocked = !node.isLocked;
+  }
   exportCanvasAsPNG(id: string, fileName: string) {
     const canvasElement = document.getElementById(id) as HTMLCanvasElement;
     const MIME_TYPE = "image/png";
@@ -333,7 +357,7 @@ export default class App extends Vue {
   draw() {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.fillStyle = this.canvasConfig.color;
-    context.fillRect(0, 0 ,canvas.width, canvas.height);
+    context.fillRect(0, 0, canvas.width, canvas.height);
     this.treeData.forEach((node) => node.paint(context));
     requestAnimationFrame(this.draw);
   }

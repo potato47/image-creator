@@ -11,6 +11,7 @@ export class RoundRectOutlineNode implements INode {
     radius = 10;
     lineWidth = 5;
     color = '#333333';
+    isLocked = false;
 
     constructor(context: CanvasRenderingContext2D) {
         this.x = context.canvas.width / 2 - this.width / 2;

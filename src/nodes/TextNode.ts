@@ -10,6 +10,7 @@ export class TextNode implements INode {
     fontFamily = 'sans-serif'; // serif;
     color = '#333333';
     string = '文字';
+    isLocked = false;
 
     constructor(context: CanvasRenderingContext2D) {
         const width = context.measureText(this.string).width;

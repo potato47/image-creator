@@ -11,6 +11,7 @@ export class TextOutlineNode implements INode {
     lineWidth = 2;
     color = '#333333';
     string = '空心文字';
+    isLocked = false;
 
     constructor(context: CanvasRenderingContext2D) {
         const width = context.measureText(this.string).width;
