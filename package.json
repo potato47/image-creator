@@ -6,11 +6,13 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "lint": "vue-cli-service lint"
+    "lint": "vue-cli-service lint",
+    "tauri": "tauri"
   },
   "dependencies": {
     "core-js": "^3.8.1",
     "element-plus": "^1.0.2-beta.28",
+    "tauri": "^0.14.1",
     "vue": "^3.0.4",
     "vue-class-component": "^8.0.0-0"
   },

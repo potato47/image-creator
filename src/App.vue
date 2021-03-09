@@ -175,32 +175,34 @@
               v-model="currentNode[key.name]"
               v-if="key.type == 'Color'"
             ></el-color-picker>
+            <el-checkbox v-model="currentNode[key.name]" v-if="key.type == 'Bool'"></el-checkbox>
           </el-form-item>
+          <pixel-canvas v-model:node="currentNode" v-if="currentNode.type == 'PixelCanvas' && currentNode.isEditing"></pixel-canvas>
         </el-form>
       </el-aside>
     </el-container>
   </el-container>
-  <!-- <HelloWorld msg="Welcome to Your Vue.js App" /> -->
 </template>
 
 <script lang="ts">
 // import { defineComponent } from "vue";
 import { Options, Vue } from "vue-class-component";
 // import HelloWorld from "./components/HelloWorld.vue";
+import PixelCanvas from "./components/PixelCanvas.vue";
 import { INode, INodeKey } from "./nodes/NodeCommon";
 import { templateGroups } from "./configs/TemplatesConfig";
 
 let canvas: HTMLCanvasElement;
 let context: CanvasRenderingContext2D;
 
-// @Options({
-//   props: {
-//     msg: String,
-//   },
-//   components: {
-//     HelloWorld
-//   }
-// })
+@Options({
+  // props: {
+  //   msg: String,
+  // },
+  components: {
+    PixelCanvas
+  }
+})
 export default class App extends Vue {
   msg!: string;
   uuid = 0;
